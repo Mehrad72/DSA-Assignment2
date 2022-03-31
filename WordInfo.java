@@ -5,12 +5,8 @@ public class WordInfo {
     public String meaning;
 
     public WordInfo(String word, String meaning) {
-        this.word = word;
-        this.meaning = meaning;
-    }
-
-    public WordInfo(String word){
-        this.word = word;
+        this.word = word.toLowerCase();
+        this.meaning = meaning.toLowerCase();
     }
 
 }

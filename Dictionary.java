@@ -1,12 +1,33 @@
 package com.assignment2;
 
-import java.util.Locale;
+import java.util.Objects;
 
 public class Dictionary {
-    public WordNode root;
+     WordNode root;
 
     public Dictionary(){
         root = null;
+    }
+
+    WordNode arrayToTree(WordInfo[] array, int start, int end){
+        //Base Case
+        if(start > end){
+            return null;
+        }
+
+        // Middle Element of the array
+        int mid = (start + end) / 2;
+        WordNode node = new WordNode(array[mid]);
+
+        // Recursively build down the tree
+        node.left = arrayToTree(array, start, mid - 1);
+        node.right = arrayToTree(array, mid + 1, end);
+
+        return node;
+    }
+
+    WordNode arrayInsertBalance(WordInfo[] wordList, int n){
+        return root = arrayToTree(wordList,0, n);
     }
 
     public boolean insert(String word, String meaning){
@@ -26,14 +47,14 @@ public class Dictionary {
 
             while(current != null){
                 parent = current;
-                if(newWord.word.compareTo(current.object.word) < 0){
+                if(newWord.word.compareTo(current.object.word) <= 0){
                     current = current.left;
                 }
                 else{
                     current = current.right;
                 }
             }
-            if(newWord.word.compareTo(parent.object.word) < 0){
+            if(newWord.word.compareTo(parent.object.word) <= 0){
                 parent.left = newNode;
             }
             else{
@@ -82,38 +103,36 @@ public class Dictionary {
     }
 
     public boolean exists(String word){
-        WordNode current = root;
-        while(current != null && !current.object.word.equals(word)){
-            if(current.object.word.compareTo(word) > 0){
-                current = current.left;
-            }
-            else{
-                current = current.right;
-            }
-        }
-        return current != null;
+       WordNode current = root;
+       while(current != null && !current.object.word.equals(word)){
+           if(current.object.word.compareTo(word) >= 0){
+               current = current.left;
+           }
+           else{
+               current = current.right;
+           }
+       }
+       return current != null;
     }
 
     public String getMeaning(String word){
         WordNode current = root;
-        String meaningOut = "";
         while(current != null && !current.object.word.equals(word)){
-            if(current.object.word.compareTo(word) > 0){
+            if(current.object.word.compareTo(word) >= 0){
                 current = current.left;
             }
             else{
                 current = current.right;
             }
         }
-        if(current != null) { meaningOut = current.object.meaning; }
-        else{ meaningOut = "Sorry this is not in the dictionary"; }
+        if(current != null) { return current.object.meaning; }
+        else{ return "Sorry this is not in the dictionary"; }
 
-        return meaningOut;
     }
 
     public boolean delete(String word){
-        root = deleteRecursive(root, word);
-        if(root != null){
+        if(exists(word)){
+            root = deleteRecursive(root, word);
             return true;
         }
         else{
@@ -163,9 +182,6 @@ public class Dictionary {
             lh = heightBalnceCheck(node.left);
             rh = heightBalnceCheck(node.right);
         }
-
-        System.out.println("Sum of the right tree is: " + rh);
-        System.out.println("Sum of the left tree is: " +lh);
 
         return Math.abs(lh - rh) <= 1 && isBalanced(node.left) && isBalanced(node.right);
     }
